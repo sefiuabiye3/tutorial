@@ -1,0 +1,517 @@
+CMSC388T
+
+Introduction To Docker
+
+Contents
+
+1
+2
+3
+
+Docker
+Understanding Docker and Containerized
+Applications.
+
+Docker CLI
+Getting started with using Docker CLI and
+working with containerized applications
+
+Dockerizing an Application
+Dockerize your own application in a custom
+docker image
+2
+
+1. Docker
+Understanding Docker and
+Containerized Applications.
+
+Virtual Machines
+
+●
+
+Isolates applications and allocates resources to
+run that application
+
+●
+
+VMs can be shared as images
+
+●
+
+Aren’t dependent on the Host OS
+
+●
+
+Multiple VMs can be run simultaneously using a
+hypervisor
+Image Source: docker.com
+
+4
+
+Docker Containers
+
+●
+●
+●
+●
+●
+●
+●
+●
+
+Standard unit of software
+Packages code and dependencies
+Can be shared as Docker Images
+Multiple containers can be run simultaneously
+Portable - Can be used with any OS
+Lightweight - Uses the host operating system
+Secure - Strong default isolation features
+Sometimes used with VMs
+
+Image Source: docker.com
+
+5
+
+Microservices
+
+●
+●
+●
+●
+
+Breaks large applications down into
+smaller executable components
+Easy to maintain and test
+Loosely coupled and can be deployed
+independently
+Can be combined with serverless
+architecture (AWS Fargate)
+
+Image Source: hackernoon.com
+
+6
+
+Why Use Docker
+
+●
+●
+●
+●
+●
+●
+
+Develop applications that work on any OS
+Easy to share applications among teams
+Easy to scale across multiple servers
+Large applications can be broken into multiple
+containers - one for each microservice
+Great solution for Cloud Computing
+Big community and library of Docker Images
+
+Image Source: docker.com
+
+7
+
+Serverless
+
+●
+●
+●
+●
+●
+
+Removes Dependency on Infrastructure
+Allows developers to focus on application
+development
+Microservices can be decoupled with different
+cloud services
+Usually more cost effective
+Probably covered in more depth in a Cloud
+Computing class
+
+Image Source: aws.amazon.com
+
+8
+
+Clicker Quiz
+Which of the following is an advantage of using Docker
+Containers over Virtual Machines?
+a)
+b)
+c)
+d)
+
+Multiple containers can be run on the same machine
+Uses the Host OS
+Can be shared as images
+all of the above
+
+Clicker Quiz
+Which of the following is an advantage of using Docker
+Containers over Virtual Machines?
+a)
+b)
+c)
+d)
+
+Multiple containers can be run on the same machine
+Uses the Host OS
+Can be shared as images
+all of the above
+
+2. Using Docker CLI
+Working with Gitlab to work in a
+DevOps environment with our existing
+Github Repositories
+
+Install Docker Engine
+
+Install Docker Engine
+•
+
+Docker Engine is available on
+a variety of Linux platforms,
+macOS and Windows 10
+through Docker Desktop
+
+Pull An Image
+There are many publicly available images that we can use to work with Docker.
+The example below pulls a hello-world image using the docker pull command:
+[ ~ ]docker pull hello-world
+Using default tag: latest
+latest: Pulling from library/hello-world
+0e03bdcc26d7: Pull complete
+Digest: sha256:31b9c7d48790f0d8c50ab433d9c3b7e17666d6993084c002c2ff1ca09b96391d
+Status: Downloaded newer image for hello-world:latest
+docker.io/library/hello-world:latest
+[ ~ ]docker images
+REPOSITORY
+TAG
+hello-world
+latest
+
+IMAGE ID
+bf756fb1ae65
+
+CREATED
+12 months ago
+
+SIZE
+13.3kB
+
+13
+
+Create A Container
+To create a container from an image we can use the docker create command
+
+[ ~ ]docker create hello-world
+2ffd5f2c5a7562fbf1d7b89a14c11a52e5843dd7938f380a8cd53f3952da99de
+
+14
+
+Run A Container
+To run a container we can use the docker container start command to start a
+container. The -i runs the container interactively and allows us to see the output
+[ ~ ] docker container start -i 2ffd5f2c5a7562fbf1d7…
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+15
+
+Run An Image
+There is a shortcut for building a container from an image and running it with the
+docker run command. This will create a new container for an image and run it:
+[ ~ ] docker run hello-world
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+16
+
+List Images
+To see what images are already installed on your machine you can use the
+docker image ls command. We can see our hello-world image below:
+[ ~ ]docker image ls
+REPOSITORY
+TAG
+ubuntu
+latest
+hello-world
+latest
+
+IMAGE ID
+f63181f19b2f
+bf756fb1ae65
+
+CREATED
+13 hours ago
+12 months ago
+
+SIZE
+72.9MB
+13.3kB
+
+17
+
+List Containers
+To list the containers that we have built, we can use the docker container ls command.
+The -a flag allows us to see both stopped and running containers. There are two containers
+below, one that was built with the docker create command and the other that was built with
+docker run:
+[ ~ ]docker
+
+container ls –a
+
+CONTAINER ID
+5017fd2b94c2
+5f0cea57eacf
+2ffd5f2c5a75
+
+IMAGE
+hello-world
+ubuntu
+hello-world
+
+COMMAND
+"/hello"
+"bash"
+"/hello"
+
+CREATED
+7 minutes ago
+10 minutes ago
+14 minutes ago
+
+STATUS
+Exited (0) 7 minutes ago
+Exited (127) 8 minutes ago
+Exited (0) 13 minutes ago
+
+PORTS
+
+NAMES
+stoic_nobel
+condescending_neumann
+hungry_mclaren
+
+18
+
+Running Interactively
+Running containers interactively allows you to run commands inside the container if it
+supports it. We can use the openjdk image that we used before:
+[ ~ ]docker run -it openjdk
+Unable to find image 'openjdk:latest' locally
+latest: Pulling from library/openjdk
+a73adebe9317: Pull complete
+8b73bcd34cfe: Pull complete
+1227243b28c4: Pull complete
+Digest: sha256:7ada0d840136690ac1099ce3172fb02787bbed83462597e0e2c9472a0a63dea5
+Status: Downloaded newer image for openjdk:latest
+Jan 21, 2021 4:48:58 PM java.util.prefs.FileSystemPreferences$1 run
+INFO: Created user preferences directory.
+| Welcome to JShell -- Version 15.0.2
+| For an introduction type: /help intro
+jshell> System.out.println(”hello world");
+Hello world
+
+This allows us to execute java commands line by line in a Java shell
+19
+
+List Running Processes
+To see what containers are currently running, we can use the docker ps command. This
+is useful when you are running containers in the background.
+
+[ ~ ]docker ps
+CONTAINER ID
+IMAGE
+55e4a7c3ddcc
+openjdk
+
+COMMAND
+"jshell"
+
+CREATED
+11 seconds ago
+
+STATUS
+Up 10 seconds
+
+PORTS
+
+NAMES
+affectionate_kowalevski
+
+20
+
+Interactive shell
+[ ~ ] docker run -it ubuntu bash
+Unable to find image 'ubuntu:latest' locally
+latest: Pulling from library/ubuntu
+83ee3a23efb7: Pull complete
+db98fc6f11f0: Pull complete
+f611acd52c6c: Pull complete
+Digest:
+sha256:703218c0465075f4425e58fac086e09e1de5c340b12976ab9eb8ad26615c3715
+Status: Downloaded newer image for ubuntu:latest
+root@5f0cea57eacf:/#
+
+Clicker Quiz
+How can you run a container?
+a)
+b)
+c)
+d)
+
+docker container start [ContainerID]
+docker run [ContainerID]
+docker run [ImageID]
+none of the above
+
+Clicker Quiz
+How can you run a container?
+a)
+b)
+c)
+d)
+
+docker container start [ContainerID]
+docker run [ContainerID]
+docker run [ImageID]
+none of the above
+
+3. Dockerize An
+Application
+Dockerize your own application in a
+custom docker image
+
+Revisiting the Calculator TestRepo
+
+Let’s dockerize the code in the repository
+we created in Lecture 6. It has a calculator
+class and two JUnit tests for add and
+subtract.
+
+25
+
+Adding A Dockerfile
+
+To create a custom docker image. We need
+to create a Dockerfile. The dockerfile
+specifies how our image should be built.
+
+Dockerfile
+26
+
+Dockerfile Syntax
+
+●
+●
+●
+●
+●
+●
+
+From - The base image to use
+Run - Runs commands when building
+the docker image
+Workdir - Specifies the directory that
+commands are run from
+User - Switches users
+Copy - Copies Files
+CMD - Runs commands when
+running the container
+Dockerfile
+27
+
+Dockerfile Explained
+1. Use the OpenJDK image to have a preconfigured java environment
+2. Add a new user “ojdk” that we will be
+using for executing scripts
+3. Create a directory that will contain our
+files and give permission to our user
+4. Change the working directory to the
+directory we created
+5. Copy the java and junit files
+6. Switch to user ojdk
+7. Compile all of our code
+8. Copy files to the working directory and
+give permissions to ojdk
+9. Run all tests
+
+Dockerfile
+28
+
+Build A Docker Image
+To build a docker image using a Dockerfile we can use the docker image build
+command and provide it the directory where the Dockerfile exists. The --tag
+option allows us to name and tag the docker image.
+
+29
+
+Run Our Custom Image
+We can use the docker run command to run our image and we can see that our
+tests are being run:
+
+30
+
+Run Interactively
+We can use docker run -it to run our image interactively and open a bash
+shell in our working directory:
+
+31
+
+Docker Compose File
+
+Docker Compose files can be used to run
+multiple services at once and is great once
+you have many microservices as part of
+your application. For our project we create
+a single service calculator that
+● is built using a custom Dockerfile
+● tagged with the name calculator
+● restarts unless it is stopped
+
+docker-compose.yml
+
+32
+
+Run Docker Compose
+To run our docker compose file, we use the docker-compose up command. This
+builds all images and and runs and containers.
+
+33
+
+Stop Containers
+The calculator container will keep restarting unless its stopped. To stop all
+services, we can use the docker-compose down command:
+
+34
+
+Clean Up
+To remove all unused docker resources, we can use the docker system prune
+command with the --all flag:
+
+35
+
+Clicker Quiz
+What’s the difference between the RUN and CMD commands
+in the Dockerfile?
+a) CMD is executed when images are being built while
+RUN is executed when containers are started
+b) RUN is executed when images are being built while
+CMD is executed when containers are started
+c) There is no difference between RUN and CMD
+d) There is no difference between RUN and CMD unless
+the container is started interactively
+
+Clicker Quiz
+What’s the difference between the RUN and CMD commands
+in the Dockerfile?
+a) CMD is executed when images are being built while
+RUN is executed when containers are started
+b) RUN is executed when images are being built while
+CMD is executed when containers are started
+c) There is no difference between RUN and CMD
+d) There is no difference between RUN and CMD unless
+the container is started interactively
+
+

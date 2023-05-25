@@ -1,0 +1,3743 @@
+Permissions it consist of there attributes:-
+
+read - r :- 4
+write - w :- 2
+xecute - x :- 1
+others - 0
+
+blank - file
+d - directory
+l - softlink
+
+*****
+root directory permission = 755
+7 - owner
+5 - group owner
+5 - others
+
+******
+
+root file permission = 644
+6 - owner
+4 - group owner
+4 - others
+
+*********
+$ normal user directory permision =775
+$ normal user file permission =644
+
+**** 1 - symbolic link (file)
+2 - symbolic link (directory) (default)
+
+# mkdir /data
+# ls -ld /data (permission check for directory)
+# cd /data
+# ls -a (symbolic link show )
+. ..
+. current directory (pwd)
+.. one label back directory
+
+# mkdir /data/a{1..5}
+# touch /data/b{1..5}
+# ll /data
+#
+# touch /tcs/a{1..5}
+# ll /tcs
+# ls -ld /tcs
+#
+
+# mkdir -p /data/a1/a2/a3/a4 (create parrent directory)
+
+# ls -ld /data
+# ll
+# ls -R /data
+# ls -lR /data
+
+****** ls command
+# l.
+# ls -a
+# ls -i
+# ls -lrt
+# ls -lrth
+# ls -lSrh
+# ls -lSh
+
+***********************
+
+# mkdir /php
+# touch /php/a{1..5}
+# ls -ld /php
+# chmod 777 /php (directory rwx permission)
+# ls -ld /php
+
+(check permission)
+
+# chmod 770 /php (directory read ,write other permission )
+# ls -ld /php
+# ll /php
+# chmod 777 /php
+# ls -ld /php
+# ll /php
+# chmod -R 777 /php
+# ls -ld /php
+# chmod -R 770 /php
+# ls -ld /php
+
+#
+
+******
+
+# useradd rahul
+# chown rahul /php ( ownership permission create for directory)
+# ls -ld /php
+# ll /php
+# chown -R rahul /php
+# ll /php
+
+# groupadd tcs (create groupadd)
+# useradd -G tcs u1 (add user to groupadd)
+# useradd -G tcs u2 (add user to group)
+# ls -ld /php
+# chgrp tcs /php ( group ownership for directory)
+# ls -ld /php
+# chgrp -R tcs /php
+# ll /php
+
+# useradd rajjev
+# usermod -G tcs rajeev
+# chown -R rahul:tcs /php
+# ls -ld /php
+
+*******
+ACL (access control list)
+
+**** user based acl
+
+# cp /etc/fstab /tmp (copy file to tmp)
+# ll /tmp/fstab
+# getfacl /tmp/fstab
+#
+
+# useradd harry
+# useradd natasha
+# useradd sarah
+
+# setfacl -m u:harry:--- /tmp/fstab
+
+# setfacl -m u:natasha:r-- /tmp/fstab
+
+# setfacl -m u:sarah:rwx /tmp/fstab
+
+# ll /tmp/fstab
+# getfacl /tmp/fstab
+
+# getfacl /tmp/fstab | grep mask
+# getfacl /tmp/fstab | grep rwx
+#
+
+****
+
+group based acl
+
+# groupadd ibm1
+
+# groupadd ibm2
+
+# useradd -G ibm1 i1
+# useradd -G ibm1 i2
+
+# useradd -G ibm2 i5
+# useradd -G ibm2 i6
+# setfacl -m g:ibm1:--- /tmp/fstab
+# setfacl -m g:ibm2:r-- /tmp/fstab
+#getfacl /tmp/fstab
+
+********** other based acl
+
+# setfacl -m o:--- /tmp/fstab
+# getfacl /tmp/fstab
+# ll /tmp/fstab
+
+******************************
+
+******** how to remove acl any user
+
+# setfacl -x u:harry /tmp/fstab
+# getfacl /tmp/fstab
+
+how to remove acl any group
+
+# setfacl -x g:ibm1 /tmp/fstab
+# getfacl /tmp/fstab
+*********** how to all remove user nd group other acl
+
+# setfacl --remove-all /tmp/fstab
+# ll /tmp/fstab
+# getfacl /tmp/fstab
+# chmod 644 /tmp/fstab
+
+Q1.
+
+1. copy the file /etc/passwd into /tmp directory
+2. set the permission 770
+3. add a user > rahul
+4. give owenership on /tmp/passwd file for rahul
+5. useradd 1. user1 --user2 r-user3 rwx
+
+6. group wipro1 rwx
+w1 (user)
+w2
+w3
+7. remove the acl from only user3
+
+****** chattr : change attribute
+
+chatter mainlly used to apply very high level permision on any file or directory.
+it is lso applicable super user (root)
+
+attribute
+
+operator
+
+a
+i
+
++
+i
+
+(allow)
+(remove)
+
+a => allow only read,copy & append but not edit , delete, modify,rename & link move
+i => read & copy but not append also
+
+1st example:-
+
+# echo "this is my test file " > linux
+# cat linux
+
+# lsattr linux (chek chattr)
+# chattr +a linux
+# cat linux
+# lsattr linux
+# cp linux /tmp
+# echo "hello" > linux
+# echo "hello" >> linux
+# cat linux
+# rm -rf linux
+# mv linux krishna
+# chattr -a linux
+
+2nd example:-
+
+# lsattr /etc/passwd
+# chattr +i /etc/passwd (set chattr to /etc/passwd)
+# lsattr /etc/passwd (check chattr to /etc/passwd)
+# useraadd raj (not useradd)
+
+# useradd raj2
+# userdel -rf raj (no user delete)
+# chattr -i /etc/passwd (remove chatter /etc/passwd)
+# chattr +i /etc/shadow (set chattr shadow file )
+# passwd (not change passwd root user)
+# chattr -i /etc/shadow (remove chattr shadow file)
+
+3rd step :-
+
+# chattr -R +i /home
+# ls /home
+# su - alok
+$ touch abc
+$ exit
+# chattr -R -i /home
+
+4th step:-
+
+******** how to apply chattr with any normal user account
+
+command
+execution rights
+1. suid => super user id (u+s)
+2. sudo
+
+# which chattr
+# ll /usr/bin/chattr
+# chmod u+s /usr/bin/chattr
+# ll /usr/bin/chattr
+
+# useradd deepak
+# su - deepak
+$ echo "hello deepak " > abc
+$ ls
+$ chattr +i abc
+$ lsattr abc
+$ cat abc
+$ rm -rf abc
+$ exit
+# rm -rf /home/deepak/abc
+# lsattr /home/deepak/abc
+# chattr -i /home/deepak/abc
+# lsattr /home/deepak/abc
+# rm -rf /home/deepak/abc
+
+************* UMASK
+umask basically defind the default permission of any users accounts data.
+
+default umask of super user => 022
+default umask of normal user => 002
+
+root user umask
+
+1.# directory => 777
+-022
+755
+
+# file => 666
+- 022
+644
+
+normal user umask
+
+$ directory => 777
+- 002
+775
+$ file
+
+=> 666
+-002
+644
+
+how to change umask value temprory
+
+# umask (check umask)
+# umask 222 (set umask)
+# umask
+# touch vipin
+# mkdir /shyam
+# ll vipin (chek umask file)
+# ls -ld /shyam (check umask directory)
+
+how to set permanent umask
+
+# vim .bashrc
+
+umask 222
+
+wq!
+
+# exit
+# umask
+
+remove permanent umask
+
+# vim .bashrc
+
+delete line umask 222
+
+wq!
+
+# exit
+# umask
+
+********* special permission
+
+numaric code
+
+symbolic code
+
+1. suid => set user id -> 4
+
+-> u+s
+
+2. sgid => set group id -> 2
+
+-> g+s
+
+3. sticky bit => sticky bit -> 1
+
+-> o+t
+
+commands
+
+file
+
+directory
+
+suid
+
+yes
+
+no
+
+no
+
+sgid
+
+no
+
+no
+
+yes
+
+stikybit
+
+no
+
+no
+
+yes
+
+suid u+s or 4
+
+# fdisk -l
+
+$ fdisk -l
+
+$ fdisk -l
+
+yes
+
+no
+
+no
+
+1st example:- SUID
+
+# which fdisk
+# fdisk -l
+# which fdisk
+# ll /usr/sbin/fdisk
+# chmod 4755 /usr/sbin/fdisk (set suid)
+OR
+# chmod u+s /usr/sbin/fdisk
+
+# ll /usr/sbin/fdisk
+
+# useradd deepak
+
+# su - deepak
+$ fdisk -l
+$ exit
+
+# chmod u-s /usr/sbin/fdisk (remove suid)
+OR
+# chmod 0755 /usr/sbin/fdisk
+
+2nd example:-
+
+# which useradd
+# ll /usr/sbin/useradd
+# chmod 4755 /usr/sbin/useradd
+
+# ll /usr/sbin/useradd
+
+3rd example:-
+
+# which su
+# which passwd
+# ll /usr/bin/passwd (all ready set suid)
+# ll /usr/bin/su
+# ll /usr/bin (chek suid)
+# ll /usr/sbin
+
+************ SGID => 2 OR g+s
+
+1st example:-
+
+# mkdir /java
+# groupadd wipro
+# ls -ld /java
+# chgrp wipro /java
+# ls -ld /java
+# chmod 2777 /java (set sgid)
+# ls -ld /java
+# useradd u1
+# useradd u2
+# su - u1
+$ cd /java
+$ touch java1
+$ ll
+$ exit
+
+# su - u2
+
+$ cd /java
+$ touch java2
+$ ll
+$ exit
+
+# touch /java/java3
+# ll /java
+
+# chmod g-s /java (remove sgid)
+# ls -ld /java
+
+********** STICKYBIT => 1 OR o+t
+
+# mkdir /fedora
+# chmod 1777 /fedora (set sticky bit)
+# ls -ld /fedora (check sticky bit)
+# useradd sachin
+# useradd soniya
+
+# su - sachin
+$ cd /fedora
+$ echo "hello" > fedora1
+$ ll
+$ exit
+
+# su - soniya
+$ cd /fedora
+$ ll
+
+$ cat fedora1
+$ rm -rf fedora1
+$ cd
+$ exit
+
+# chmod 0755 /fedora (remove sticky bit)
+# ls -ld /fedora
+
+**** how to apply sgid and sticky bit
+
+# chgrp wipro /fedora
+# chmod 3777 /fedora
+# ls -ld /fedora
+# chmod 7777 /fedora (set suid ,sgid nd sticky bit) (not any meaning)
+# ls -ld /fedora
+# chmod u-s /fedora
+# ls -ld /fedora
+
+rwT
+T (indetect to back not X )
+
+# chmod o-x /fedora
+# ls -ld /fedora
+# chmod o+x /fedora
+# ls -ld /fedora
+# chmod g-x /fedora
+# ls -ld /fedora
+# chmod g+x /fedora
+# ls -ld /fedora
+
+*************************
+how to recover any users profile files:-
+
+# useradd raju
+# su - raju
+$ ls
+$ ls -a
+$ rm -rf .*
+$ ls -a
+$ exit
+
+# su - raju
+$ exit
+
+# cd /etc/skel
+# ls -a
+# cp -af .[!.]* /home/raju
+# su - raju
+$ ls -a
+$ exit
+
+*************
+how to add any users without any useradd command with create to directory for useradd :-
+
+# cd /home
+# ll
+
+# mkdir network
+# ll
+# chmod 700 /home/network
+# ll
+# vim /etc/passwd
+
+network:x:1020:1020::/home/network:/bin/bash
+
+wq!
+
+# vim /etc/group
+
+network:x:1020:
+
+wq!
+
+# chown network /home/network
+# chgrp network /home/network
+# ll
+
+# cp -af /etc/skel/.[!.]* /home/network
+# cd
+# id network
+# passwd network
+12345
+12345
+# su - network
+$ pwd
+$ exit
+
+**************** SUDO (super user do)
+1st example :- how to provide full rights
+
+# useradd sachin
+# passwd sachin
+12345
+12345
+
+# vim /etc/ sudoers
+
+98 line after entry
+
+sachin ALL=(ALL)
+
+ALL
+
+wq!
+
+# su - sachin
+$ sudo fdisk -l
+sudo password : 12345
+
+$ sudo useradd raj
+$ sudo userdel raj
+$ sudo systemctl restart crond
+$ sudo -l (rights of list )
+
+$ exit
+
+******** how to provide some limted rights sudo
+
+# which useradd
+
+# which usermod
+
+# vim /etc/sudoers
+
+98 line after entry
+
+sachin ALL=(ALL)
+
+/usr/sbin/useradd, /usr/sbin/usermod
+
+wq!
+
+# su -sachin
+
+$ sudo -l
+$ exit
+
+********* how to allow all command except of given list
+
+# which fdisk
+# which userdel
+# useradd alok
+# passwd alok
+123
+
+# vim /etc/sudoers
+
+98 line after entry
+
+sachin ALL=(ALL)
+
+/usr/sbin/useradd, /usr/sbin/usermod
+
+alok ALL=(ALL)
+
+ALL, !/usr/sbin/userdel, !/usr/sbin/fdisk
+
+wq!
+
+# su - alok
+$ sudo useradd rajeev
+$ sudo fdisk -l
+$ sudo -l
+$ exit
+
+****** how to create sudo group
+
+# groupad tcs
+# useradd -G tcs t1
+# useradd -G tcs t2
+
+# passwd t1
+123
+# passwd t2
+123
+
+# vim /etc/sudoers
+
+%tcs ALL=(ALL)
+
+wq!
+
+# su - t1
+$ sudo fdisk -l
+passwd : 123
+
+$ exit
+
+ALL
+
+******** contolling services
+OR
+Daemon
+OR
+units -> in rhel7
+
+daemon => "init " or
+OR
+
+till rhel-6
+
+"systemd" program
+rhel-7
+
+unit
+
+init => pid 1
+or
+systemd
+
+# pstree
+
+server name
+
+ssh
+crontab
+
+daemon
+
+sshd
+crond
+
+ntp
+
+chronyd
+
+samba
+
+smb
+
+mailserver
+
+postfix
+
+rhel-6
+
+rhel-7
+
+parrent process
+
+parrent process
+
+"int"
+
+"systemd"
+
+pid = 1
+
+pid= 1
+
+commands
+temporey
+"service"
+
+permanent
+
+commands
+
+"chkconfig"
+
+t -- p
+"systemctl"
+
+# service sshd start/stop/restart/reload/status
+# chkconfig sshd on/off
+
+# systemctl enable sshd
+
+# systemctl actions unitname .type
+service path
+
+# cat /etc/redhat-release
+# cat /etc/system-release
+# cat /etc/os-release
+
+# pstree
+
+# systemctl start sshd
+
+socket
+
+# pidof systemd
+# pstree | grep crond
+# pstree | grep sshd
+# pidof sshd
+#
+
+# systemctl status sshd
+# systemctl is-active sshd
+
+(temprory active)
+
+# systemctl is-enabled sshd
+
+(permanent enble)
+
+# systemctl stop sshd
+
+(temprory stop)
+
+# systemctl disable sshd (permanent disable)
+# systemctl status sshd
+# systemctl start sshd (temprory)
+# systemctl enable sshd (permanent)
+
+#
+# systemctl list-units
+
+(temprory status of all service)
+
+# systemctl list-units-files
+
+(permanent status of all service)
+
+# systemctl list-units | grep crond
+# systemctl list-units sshd
+# systemctl list-units | grep -E 'sshd|crond'
+# systemctl
+# systemctl | grep crond
+#
+
+# systemctl list-units-files | grep crond
+# systemctl list-units-files | grep sshd
+# systemctl list-units --type=service
+# systemctl list-units --type=path
+# systemctl list-units --type=socket
+
+# systemctl list-units --failed
+
+# systemctl status iptables
+# systemctl status firewalld
+# systemctl mask iptables
+# systemctl start iptables
+# systemctl status iptables
+# systemctl umask iptables
+# systemctl start iptables
+# systemctl enable iptables
+# systemctl stop firewalld
+# systemctl disable firewalld
+# systemctel mask firewalld
+# systemctl list-units | grep firewalld
+
+# systemctl list-units-files | grep masked (check masked of service)
+#
+
+#
+
+********** RUN Lebel
+
+run level
+
+targets
+
+init
+
+systemd
+
+there are 7 type of run level :-
+
+# init 0 => { poweroff }
+
+# int 1 => ( single user mode or trubleshooting mode)
+# init 2 => ( multi user mode but without network)
+# init 3 => ( full multi user mode or text mode )
+# init 4 => ( unused)
+# init 5 => ( gui mode x-11 window)
+# init 6 => ( reboot)
+
+# runlevel (check runlevel mode )
+# who -r
+
+types of runlevel changeing method :-
+
+tempory
+
+by using
+"init" commnd
+
+permanent
+
+at the time of
+
+# vim /etc/inittab
+
+machine boot up
+
+id:3:initdefault
+
+:wq!
+# init 6
+
+# runlevel
+# who -r
+# init 3
+# runlevel
+# init 5
+
+# runlevel
+
+# cat /etc/inittab
+
+*****rhel 6
+2 mode
+1. rescue mode ( to recover any grub & kernel related issues)
+2. emergency mode ( to recover any file system related issues)
+
+rhel7
+******* targets
+there are only 4 types of targets
+
+1. graphical.target => init 5 (full multi user mode with gui+cli )
+2. multi-user.target => init 3 ( full multi user mode with cli only )
+3. rescue.target => rescue mode
+4 emergency.target => emergency mode
+
+# init 6
+or
+# systemcl reboot
+
+# init 0
+or
+# systemctl poweroff
+
+# init 1 => rd.break
+
+# systemctl get-default
+# systemctl isolate multi-user.target ( tempory cli text mode )
+# systemctl isolate graphical.target ( tempory gui mode)
+
+# systemctl set-default multi-user.target ( permanent cli text mode )
+
+# cat /etc/systemd/system/default.target (targets file )
+
+# systemctl reboot
+
+# systemctl set-default graphical.target ( permanent gui mode )
+
+# systemctl get-default (check runlevel )
+
+******* how to deactivate ctrl+alt+delete
+
+# vim /usr/lib/systemd/system/ctrl-alt-del.target
+
+#requires=systemd-reboot.service
+
+wq!
+
+#
+
+********** how to break root password rhel7
+1. reboot
+press e to edit
+
+2. linux 16 end line type rd.break
+3. than ctrl+x
+
+# mount -o remount rw /sysroot
+# chroot /sysroot
+
+# passwd
+redhat
+redhat
+
+# getenforce
+# touch /.autorelabel
+# exit
+# exit
+
+******** how to apply user name and password on single user mode :-
+
+# grub2-mkpasswd-pbkdf2
+passwed: redhat123
+than copy
+
+# vim /etc/grub.d/40_custom
+
+set superusers="deepak"
+password_pbkdf2 deepak (paste password)
+
+wq!
+
+# grub2-mkconfig -o /boot/grub2/grub.cfg
+
+# reboot
+
+********* remove password single user mode
+
+# vim /etc/grub.d/40_custom
+
+delete edit line
+
+:wq!
+
+# grub2-mkconfig -o /boot/grub2/grub.cfg
+
+******** how to install google chrome for redhat 7
+
+**** how to create repodata manually
+
+# rpm -qa createrepo
+
+# cd /redhat/Packages
+# rpm -ivh createrepo-
+
+# createrepo -v /redhat
+# ls /redhat
+# yum clean all
+# yum repolist
+
+**********************************
+how to used gpg key concept:-
+
+# locate RPM
+copy rpm gpg key
+
+# cat /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+# vim /etc/yum.repos.d/yum.repo
+
+[yum]
+baseurl=file:///redhat
+enabled=1
+gpgcheck=1
+gpgkey=file:///redhat1/RPM-GPG-KEY-redhat-release
+
+wq!
+
+# yum clean all
+# yum repolist
+# yum install samba
+#
+
+************* how to configure yum client any give url:-
+
+# cd /etc/yum.repos.d/yum.repo
+
+[yum]
+baseurl=http://content.example.com/rhel7.0/x86_64/dvd
+enabled=1
+gpgcheck=0
+
+wq!
+
+OR
+
+# yum-config-manager --add-repo=http://classroom.example.com
+
+OR
+# yum-config-manager --add-repo=file:///redhat
+
+#
+# yum clean all
+# repolist
+
+******** NTP configure cli
+
+# vim /etc/chrony.conf
+
+server desktop0.example.com iburst
+
+wq!
+
+# systemctl restart chronyd.service
+# systemctl enable chronyd.service
+
+# timedatectl
+
+# nptdate -u 172.25.254.254 (**********)
+
+network file :-
+
+# vim /etc/hosts
+# vim /etc/hostname (permanent hostname set)
+
+# cat /etc/sysconfig/network-scrits/ifcfg-static (network configuraion file)
+# nmcli connection show
+
+# nmcli connection add connection-name static ifname eno type ethernet autoconnet yes
+ip4 '192.168.0.1/24'
+
+# nmcli connction show
+
+without dns to ping machine name
+
+# vim /etc/hosts
+
+192.168.0.1 station1.example.com staion1
+
+server1
+
+192.168.0.2 station2.example.com station2
+
+server2
+
+wq!
+
+# ping station1.example.com
+
+# ping station1
+# ping server1
+
+# hostname -a (alias show)
+# hostname -i
+# hostname -d
+# hostname -f
+# hostname -s
+
+***************************************************************
+
+( server machine ip addrs configration )
+
+# nmcli connecton add con-name ststic ifname eth0 type ethernet autoconnect yes ip4
+'172.25.0.11/24' gw4 172.25.254.254
+
+# nmcli connection show
+# ifconfig
+# ip route (gateway check)
+
+how to add machine with any dns server
+
+# nmcli connection modify static ipv4.dns 172.25.254.254
+# nmcli connection down static
+# nmcli connetion up static
+# ifconfig eth0
+# ifconfig lo
+# ifdown eth0
+# ifup eth0
+
+OR
+
+ONLY LAB CONFIGURE DNS SERVER
+
+# cat /etc/resolv.conf
+
+# vim /etc/resolv.conf (dns server configuration file check )
+
+search classroom.example.com
+
+nameserver 172.25.254.254
+
+:wq!
+
+# nmcli connection down static
+# nmcli connection up
+# nmcli device status
+# nmcli device disconnet eth0
+# nmcli device status
+# nmcli device connect eh0
+# nmcli device status
+# ip addr
+# ip a
+# ip link
+# ip add show eth0
+# ethtool eth0 (link detected yes)
+# traceroute 172.25.254.254
+# route -n
+# route
+
+***********************************************************
+how to change ip file method :-
+
+# vim /etc/sysconfig/network-scripts/ifcfg-static
+
+IPADDR0=172.25.0.15
+
+wq!
+
+# ifdown eth0
+# ifup etho
+
+# ifconfig eth0
+
+# nmcli connetion show static (all parameter show)
+#
+# nmcli connection modify static ipv4.addresses '172.25.0.20/24 172.25.254.254'
+# ifdown eth0
+# ifup eth0
+# ifconfig eth0
+
+# nmcli connetion show --active
+
+how to take ip by dhcp server :-
+
+# nmcli connetion delete static
+# nmcli connection show
+
+# nmcli connetion add con-name dynamic ifname eth0 type ethernet autoconnet yes
+# nmcli connetion show
+# ifconfig eth0
+
+# cat /etc/sysconfig/network-scripts/ifcfg-dynamic
+#
+
+# nmcli connection show dynamic
+
+# netstat -tunlp (all running port show)
+# netstat -tunlp | grep sshd
+# netstat -tunlp | grep 22
+
+# netstat -tnlp (only tcp port show)
+# netstat -unlp (only udp port show)
+# netstat -unlp | grep -v udp6
+# netstat -nr
+
+# vim /etc/services (all service port nuber entry)
+
+# cat /etc/services | grep rsync
+# cat /etc/services | grep telnet
+
+**************************************
+
+** scp nd rsync both command used to copy any files from one machine nd onther machine
+**
+SCP
+
+scp -r source dentination
+OR
+rsync -avH sourse dentination
+
+# scp -r root@172.25.0.10:/home /tmp
+# ls /tmp
+
+# scp -r root@172.25.0.10:/etc/psswd /tmp
+
+# rm -rf /etc/grub.cfg
+# scp -r root@172.25.0.10:/etc/grub2.cfg /tmp
+
+# scp -r root@172.25.0.10:/etc/grub2.cfg /etc
+# ls /tmp
+
+RSYNC
+
+# mkdir /php
+# mkdir /java
+# touch /php/a{1..5}
+# rsync -avH /php /java
+# echo "hello" > /php/a1
+# rsync -avH /php /java
+
+# rsync -avH root@172.25.0.10:/home /srv
+
+# rsync -avH /etc root@172.25.0.10:/tmp
+
+********************************************
+RAID
+(Redundant arry of independent disk)
+
+* Raid technology always used to provide high data writing scripting
+with data securing.
+
+*** Types of Raid
+
+* Software Raid
+* Hardware Raid
+
+****** Types of Raid-level
+
+1. Raid :- 0 (stripping without parity)
+2. Raid :- 1 (mirror volume)
+3. Raid :- 5 (stripping with parity)
+
+Raid - 0 :- Requirement
+
+* 2 hardisk
+* same size
+* same configuration
+* no fault tolerance
+* data writting is very fast
+* usable size 100%
+
+Raid - 1 :- mirror volume
+
+* minmum 2 hardisk
+* same size
+* same configuration
+* works on mirror concept
+* data writting is slow as compare to raid 0
+* usable size 50%
+
+Raid - 5
+
+* minumum 3 hardisk
+
+* same size
+* same configuration
+* fault tolerance
+* data writting speed is also fast
+* single hardisk failure concept
+* works on single parity concept
+
+Parity ?
+
+works on X - or operation
+
+00=0
+01=1
+10=1
+11=0
+
+disk 1 = 1010110
+disk2 = 1000101
+
+parity ? = 1000101
+
+80GB 80GB 80GB
+
+240 - 80= 160 = 66% usable size
+
+# fdisk -l
+# rpm -qa mdadm
+
+# fdisk /dev/vdb
+
+:n
+:p
+:1
+:enter
+:+2GB
+
+:n
+:p
+:2
+:enter
+:+2G
+
+:n
+:p
+:3
+:enter
+:+2G
+
+:p
+
+:t
+:1
+:fd
+
+:t
+
+:2
+:fd
+
+:t
+:3
+:fd
+
+:p (print)
+:w (save)
+
+# partprobe /dev/vdb
+# mdadm -C /dev/md0 -a yes -l 5 -n 3 /dev/vdb{1,2,3}
+
+# mkfs.xfs /dev/md0
+# mkdir /raid
+# mount /dev/md0 /raid
+
+# vim /etc/fstab
+
+/dev/md0 /raid xfs defaults 0 0
+
+:wq!
+
+# mount -a
+# df -TH
+
+# mdadm --detail /dev/md0 (check raid configuration level nd device active)
+
+OR
+
+# mdadm -D /dev/md0
+# cat /proc/mdstat
+
+***** permanet save raid this file :-
+
+# mdadm --detail --scan >> /etc/madam.conf
+
+# cat /etc/mdadm.conf
+
+Write Data :-
+
+# df -TH
+# cp -rf /etc /raid
+
+# df -TH
+
+** how to perfrom hot swapable process.
+
+# mdadm /dev/md0 -f /dev/vdb3
+# cat /proc/mdstat
+
+# mdadm --detail /dev/md0
+
+# mdadm /dev/md0 -r /dev/vdb3
+# cat /proc/mdstat
+# mdadm /dev/md0
+
+**** readd /dev/vdb3
+
+# mdadm /dev/md0 -a /dev/vdb3
+# mdadm --detail /dev/md0
+# ls /raid
+
+**** how to remove raid
+
+# umount /raid
+# mdadm --stop /dev/md0
+# mdadm --assemble /dev/md0 (enable raid)
+
+# mdadm --stop /dev/md0
+
+# vim /etc/fstab
+
+/dev/md0 /raid xfs defaults 0 0 (delete line)
+
+:wq!
+
+# mount -a
+
+# df -TH
+
+# vim /etc/madam.conf
+
+(delete entry)
+
+:wq!
+
+# fdisk /dev/fdb
+
+:d
+:1
+:d
+:2
+:d
+:3
+
+:w
+
+# partprobe /dev/vdb
+
+** Partition
+
+MBR Limit (master boot record)
+
+primary partion
+
+extented partition (it is use to only
+personal data)
+
+it is use to data
+
+logical partiton
+
+nd OS file
+
+it is sub part of extended
+
+at a ime only one
+primary partition
+can be active
+
+MBR 4 partion {including , primary & extended }
+
+primary :- min 1
+max :- 4
+
+Extended :- min 0
+max 1
+
+hex code :-
+
+primary , logical :- 83
+extended :- 5
+
+swap :- 82
+lvm :- 8e
+raid :- fd
+
+# fdisk -l (to check disk status)
+
+# fdisk /dev/sda
+
+:n
+:e
+:enter
+:enter
+:p (print)
+:n
+:enter
+:+2G
+:p (print)
+
+:w (save nd quiet)
+
+# partprobe /dev/sda
+#
+
+# mkfs.xfs /dev/sda5 (partion format)
+#
+# mkdir /data
+
+# mount /dev/sd5 /data (temprory mount data)
+
+# df -h (data mount point check)
+# ls /data
+
+# vim /etc/fstab (permanent data mount)
+
+/dev/sda5 /data xfs defaults 0 0
+
+:wq!
+
+#
+
+defaults 0 0
+
+0 :- dump value
+0 :- fsck order
+
+# mount -a
+
+# df -TH
+# du -sh /data ( file sizze check)
+
+how to test partition :-
+
+# cp -rf /etc /data
+# du -sh /data
+# df -TH
+
+*****************************
+# umount /data
+# ls /data
+
+# mount /dev/sd5 /data
+# ls /data
+
+**********************************
+
+swap partion :-
+
+# free -h (swap check)
+
+# fdisk /dev/vdb
+:n
+:p
+:1
+:enter
+:+1G
+:p (print)
+
+:
+:t (code change)
+:l (code list)
+:82
+:p (print)
+
+:w (save)
+
+# partprobe /dev/vdb
+# mkswap /dev/vdb1 (to create the swap partion)
+# swapon /dev/vdb1
+# swap -s (all swap partion activate check )
+
+# free -h
+
+# vim /etc/fstab
+
+/dev/vdb1 swap swap defaults 0 0
+
+:wq!
+
+# mount -a
+
+OR
+# cat /proc/swaps
+# cat /proc/meminfo | grep -i swap
+
+how to deactivate swap partion :-
+
+# swapoff /dev/vdb1
+# swapon -s
+
+# swapoff -a (all swap off)
+# swapon -a (all swap on)
+
+# vim /etc/fstab
+
+/dev/vdb1 swap swap defaults 0 0 (delete entry )
+
+:wq!
+
+# mount -a
+
+# fdisk /dev/vdb
+
+:d (delete)
+
+:w
+
+# partprobe /dev/vdb
+
+****************************************************
+
+Booting Process :-
+
+1. Hardware boot
+2. Bootloader
+
+3. kernel
+4. init or systemd
+5. Login screen
+
+1. Hardware Boot :-
+
+* power on machine
+* smpls will supply the :- power the all connecting devices.
+* It provides Ac to Dc current.
+
+* BIOS initilization.
+* It performs the post operration. to check all hardware connectvity.
+if all devices one ok then it given
+
+* CMOS intilization. :It will find the OS Boot.
+
+2.Bootloader:- It is us to load OS booting files.
+
+** types of bootloader
+
+1. Lilo (linux loader) file:- (/etc/lilo.conf
+2. grub file:- (/etc/grub.conf)
+3. grub2 file:- (/etc/grub2.cfg)
+
+(non visible stage)
+
+* stage -1 :- MBR (Master boot record)
+
+* stage -2 :- grub or grub2
+
+MBR :- 512 bytes
+
+446
+
+64
+
+primary boot
+
+2
+
+partion table
+
+validtion code
+
+grub2 :- load :- vmlinuz =3.10 (kernel)
+load :- initrd.img (initional ram disk ) (file)
+
+1. MBR (crupt)
+2. GRUB (crupt)
+3. KERNEL (crupt)
+4. initrd.img (crupt)
+5. Kernel painic error (crupt)
+
+go to ( rescue mode) :- dvd used
+
+3. Kernel :- It read the /etc/fstab file to mount all devices.
+* first it will mount root "/" file system .
+* After then it will mount all sub partiotion & network based
+shared file system.
+
+ctrl+d :- error
+root paasword
+
+4. init OR systemd :-
+
+* It will start parent process "init" OR "systemd"
+* It reads /etc/inittab OR
+/etc/systemd/system/default.target
+to initilize the login enviroment.
+
+* It will check all sservices status and will take the actions.
+
+* It will run all command written in /etc/rc.loacl
+
+5. Login screen :-
+
+login:- root /etc/passwd
+passwd :- redhat /etc/group
+/etc/shadow
+password policy
+profile files intilization
+
+*********** LVM **********
+
+* logical volume management
+
+data storage techniques :-
+
+1. fixed size concept
+2. not fixed size concept
+
+what is physical volume:-
+
+***********
+
+# fdisk -l
+
+# fdisk /dev/vdb
+
+:n
+:p
+:1
+: enter
+:+1G
+:p (print)
+:n
+:p
+:enter
+:+2G
+:p (print)
+:t
+:1
+
+:8e
+:t
+:2
+:8e
+:p (print)
+
+:w (save)
+
+# partprobe /dev/vdb
+
+# pvcreate /dev/vdb1 /dev/vdb2
+
+# pvdisplay
+
+# pvs (to check all physical volume with status)
+
+# vgcreate myvg1 /dev/vdb{1,2}
+
+# vgdisplay
+# vgs
+
+# lvcreate -L +1G -n mylv1 /dev/myvg1
+
+# lvcreate -L +500M -n mylv2 /dev/myvg1
+
+# mkfs.xfs /dev/myvg1/mylv1
+
+# mkfs.ext4 /dev/myvg1/mylv2
+
+# mkdir /lvm1
+
+# mkdir /lvm2
+
+# mount /dev/myvg1/mylv1 /lvm1 (tempray mount)
+# mount /dev/myvg1/mylv2 /lvm2
+
+# vim /etc/fstab
+
+(permament mount)
+
+/dev/myvg1/mylv1
+
+/lvm1
+
+xfs defaults
+
+/dev/myvg1/mylv2
+
+/lvm2
+
+ext4 defaults 0 0
+
+wq!
+
+# mount -a
+
+# df -h
+
+# df -TH
+
+# lvdisplay /dev/myvg1/mylv1
+
+# du -sh /etc
+# df -TH
+
+# cp -rf /etc /lvm1
+# cp -rf /etc /lvm2
+
+# df -TH
+
+00
+
+how to extend LVM size :-
+
+# vgs (to check used nd free space)
+# df -TH
+
+# lvextend -L +300M /dev/myvg1/mylv1
+
+# xfs_growfs /dev/myvg1/mylv1
+
+# df -TH
+
+If file ext2 , ext3 , ext4 file system :-
+
+# lvextend -L +200M /dev/myvg1/mylv2
+
+# resize2fs /dev/myvg1/mylv2
+
+# df - TH
+
+how to lvresize :-
+
+# df -TH
+
+# lvresize -L 800M -r /dev/myvg1/mylv2
+
+# df -TH
+
+# lvresize -L 1500M -r /dev/myvg1/mylv1
+
+# df -TH
+
+how to reduce any lvm size :-
+
+note:- xfs (not reduce only extend)
+
+# lvresize -L 500M -r /dev/myvg1/mylv2
+
+do you want to unmount y/n :- y
+
+# df -TH
+
+# vgs
+
+how to extend volume group size :-
+
+# fdisk /dev/vdb
+
+:n
+:p
+:3
+:enter
+
+:+1G
+:t
+:3
+:8e
+:w
+
+# partprobe /dev/vdb
+
+# pvcreate /dev/vdb3
+# pvs
+
+# vgextend myvg1 /dev/vdb3
+# vgs
+
+******************************************
+
+forcefully scan:-
+
+# pvscan
+# vgscan
+# lvscan
+
+bydefault block
+
+1 PE = 4 MB
+p :- phisical
+e :- extent (chunk)
+
+1 PE = minmum = 1 MB
+
+maximum = 128 MB
+
+128 , 64 , 32 , 16 , 8 , 4 , 2 , 1
+
+# ls /etc/lvm/archive (refrence point)
+
+Permissions it cansist of there attributes:-
+
+read - r :- 4
+write - w :- 2
+xecute - x :- 1
+others - 0
+
+blank - file
+d - directory
+l - softlink
+
+*****
+root directory permission = 755
+7 - owner
+
+5 - group owner
+5 - others
+
+******
+root file permission = 644
+6 - owner
+4 - group owner
+4 - others
+
+*********
+$ normal user directory permision =775
+$ normal user file permission =644
+
+**** 1 - symbolic link (file)
+2 - symbolic link (directory) (default)
+
+# mkdir /data
+# ls -ld /data (permission check for directory)
+# cd /data
+# ls -a (symbolic link show )
+. ..
+. current directory (pwd)
+.. one label back directory
+
+# mkdir /data/a{1..5}
+# touch /data/b{1..5}
+# ll /data
+#
+# touch /tcs/a{1..5}
+# ll /tcs
+
+# ls -ld /tcs
+#
+
+# mkdir -p /data/a1/a2/a3/a4 (create parrent directory)
+# ls -ld /data
+# ll
+# ls -R /data
+# ls -lR /data
+
+****** ls command
+# l.
+# ls -a
+# ls -i
+# ls -lrt
+# ls -lrth
+# ls -lSrh
+# ls -lSh
+
+***********************
+
+# mkdir /php
+# touch /php/a{1..5}
+# ls -ld /php
+# chmod 777 /php (directory rwx permission)
+# ls -ld /php
+
+(check permission)
+
+# chmod 770 /php (directory read ,write other permission )
+# ls -ld /php
+# ll /php
+# chmod 777 /php
+# ls -ld /php
+# ll /php
+
+# chmod -R 777 /php
+# ls -ld /php
+# chmod -R 770 /php
+# ls -ld /php
+#
+
+******
+
+# useradd rahul
+# chown rahul /php ( ownership permission create for directory)
+# ls -ld /php
+# ll /php
+# chown -R rahul /php
+# ll /php
+
+# groupadd tcs (create groupadd)
+# useradd -G tcs u1 (add user to groupadd)
+# useradd -G tcs u2 (add user to group)
+# ls -ld /php
+# chgrp tcs /php ( group ownership for directory)
+# ls -ld /php
+# chgrp -R tcs /php
+# ll /php
+
+# useradd rajjev
+# usermod -G tcs rajeev
+# chown -R rahul:tcs /php
+# ls -ld /php
+
+*******
+ACL (access control list)
+
+**** user based acl
+
+# cp /etc/fstab /tmp (copy file to tmp)
+# ll /tmp/fstab
+# getfacl /tmp/fstab
+#
+
+# useradd harry
+# useradd natasha
+# useradd sarah
+
+# setfacl -m u:harry:--- /tmp/fstab
+
+# setfacl -m u:natasha:r-- /tmp/fstab
+
+# setfacl -m u:sarah:rwx /tmp/fstab
+
+# ll /tmp/fstab
+# getfacl /tmp/fstab
+
+# getfacl /tmp/fstab | grep mask
+# getfacl /tmp/fstab | grep rwx
+#
+
+****
+
+group based acl
+
+# groupadd ibm1
+# groupadd ibm2
+
+# useradd -G ibm1 i1
+# useradd -G ibm1 i2
+
+# useradd -G ibm2 i5
+# useradd -G ibm2 i6
+# setfacl -m g:ibm1:--- /tmp/fstab
+# setfacl -m g:ibm2:r-- /tmp/fstab
+#getfacl /tmp/fstab
+
+********** other based acl
+
+# setfacl -m o:--- /tmp/fstab
+# getfacl /tmp/fstab
+# ll /tmp/fstab
+
+******************************
+
+******** how to remove acl any user
+
+# setfacl -x u:harry /tmp/fstab
+# getfacl /tmp/fstab
+
+how to remove acl any group
+
+# setfacl -x g:ibm1 /tmp/fstab
+# getfacl /tmp/fstab
+*********** how to all remove user nd group other acl
+
+# setfacl --remove-all /tmp/fstab
+# ll /tmp/fstab
+# getfacl /tmp/fstab
+# chmod 644 /tmp/fstab
+
+Q1.
+
+1. copy the file /etc/passwd into /tmp directory
+2. set the permission 770
+3. add a user > rahul
+4. give owenership on /tmp/passwd file for rahul
+5. useradd 1. user1 --user2 r-user3 rwx
+
+6. group wipro1 rwx
+w1 (user)
+w2
+w3
+7. remove the acl from only user3
+
+****** chattr : change attribute
+
+chatter mainlly used to apply very high level permision on any file or directory.
+it is lso applicable super user (root)
+
+attribute
+
+operator
+
+a
+i
+
++
+i
+
+(allow)
+(remove)
+
+a => allow only read,copy & append but not edit , delete, modify,rename & link move
+i => read & copy but not append also
+
+1st example:-
+
+# echo "this is my test file " > linux
+# cat linux
+
+# lsattr linux (chek chattr)
+# chattr +a linux
+# cat linux
+# lsattr linux
+# cp linux /tmp
+# echo "hello" > linux
+# echo "hello" >> linux
+# cat linux
+# rm -rf linux
+# mv linux krishna
+# chattr -a linux
+
+2nd example:-
+
+# lsattr /etc/passwd
+# chattr +i /etc/passwd (set chattr to /etc/passwd)
+# lsattr /etc/passwd (check chattr to /etc/passwd)
+# useraadd raj (not useradd)
+# useradd raj2
+# userdel -rf raj (no user delete)
+# chattr -i /etc/passwd (remove chatter /etc/passwd)
+# chattr +i /etc/shadow (set chattr shadow file )
+# passwd (not change passwd root user)
+# chattr -i /etc/shadow (remove chattr shadow file)
+
+3rd step :-
+
+# chattr -R +i /home
+# ls /home
+# su - alok
+$ touch abc
+$ exit
+# chattr -R -i /home
+
+4th step:-
+
+******** how to apply chattr with any normal user account
+
+command
+execution rights
+1. suid => super user id (u+s)
+2. sudo
+
+# which chattr
+# ll /usr/bin/chattr
+# chmod u+s /usr/bin/chattr
+# ll /usr/bin/chattr
+
+# useradd deepak
+# su - deepak
+$ echo "hello deepak " > abc
+$ ls
+$ chattr +i abc
+$ lsattr abc
+$ cat abc
+$ rm -rf abc
+$ exit
+# rm -rf /home/deepak/abc
+# lsattr /home/deepak/abc
+# chattr -i /home/deepak/abc
+# lsattr /home/deepak/abc
+# rm -rf /home/deepak/abc
+
+************* UMASK
+umask basically defind the default permission of any users accounts data.
+
+default umask of super user => 022
+default umask of normal user => 002
+
+root user umask
+
+1.# directory => 777
+-022
+755
+
+# file => 666
+- 022
+644
+
+normal user umask
+
+$ directory => 777
+- 002
+775
+$ file
+
+=> 666
+-002
+644
+
+how to change umask value temprory
+
+# umask (check umask)
+# umask 222 (set umask)
+# umask
+# touch vipin
+# mkdir /shyam
+# ll vipin (chek umask file)
+# ls -ld /shyam (check umask directory)
+
+how to set permanent umask
+
+# vim .bashrc
+
+umask 222
+
+wq!
+
+# exit
+# umask
+remove permanent umask
+
+# vim .bashrc
+
+delete line umask 222
+
+wq!
+
+# exit
+# umask
+
+********* special permission
+
+numaric code
+
+symbolic code
+
+1. suid => set user id -> 4
+
+-> u+s
+
+2. sgid => set group id -> 2
+
+-> g+s
+
+3. sticky bit => sticky bit -> 1
+
+-> o+t
+
+commands
+
+file
+
+directory
+
+suid
+
+yes
+
+no
+
+no
+
+sgid
+
+no
+
+no
+
+yes
+
+stikybit
+
+no
+
+no
+
+yes
+
+suid u+s or 4
+
+# fdisk -l
+
+$ fdisk -l
+
+$ fdisk -l
+
+yes
+
+no
+
+no
+
+1st example:- SUID
+
+# which fdisk
+# fdisk -l
+# which fdisk
+# ll /usr/sbin/fdisk
+# chmod 4755 /usr/sbin/fdisk (set suid)
+OR
+# chmod u+s /usr/sbin/fdisk
+
+# ll /usr/sbin/fdisk
+
+# useradd deepak
+
+# su - deepak
+$ fdisk -l
+$ exit
+
+# chmod u-s /usr/sbin/fdisk (remove suid)
+OR
+# chmod 0755 /usr/sbin/fdisk
+
+2nd example:-
+
+# which useradd
+# ll /usr/sbin/useradd
+# chmod 4755 /usr/sbin/useradd
+# ll /usr/sbin/useradd
+
+3rd example:-
+
+# which su
+# which passwd
+# ll /usr/bin/passwd (all ready set suid)
+# ll /usr/bin/su
+# ll /usr/bin (chek suid)
+# ll /usr/sbin
+
+************ SGID => 2 OR g+s
+
+1st example:-
+
+# mkdir /java
+# groupadd wipro
+# ls -ld /java
+# chgrp wipro /java
+# ls -ld /java
+# chmod 2777 /java (set sgid)
+# ls -ld /java
+# useradd u1
+# useradd u2
+# su - u1
+$ cd /java
+$ touch java1
+
+$ ll
+$ exit
+
+# su - u2
+$ cd /java
+$ touch java2
+$ ll
+$ exit
+
+# touch /java/java3
+# ll /java
+
+# chmod g-s /java (remove sgid)
+# ls -ld /java
+
+********** STICKYBIT => 1 OR o+t
+
+# mkdir /fedora
+# chmod 1777 /fedora (set sticky bit)
+# ls -ld /fedora (check sticky bit)
+# useradd sachin
+# useradd soniya
+
+# su - sachin
+$ cd /fedora
+$ echo "hello" > fedora1
+$ ll
+$ exit
+
+# su - soniya
+$ cd /fedora
+$ ll
+$ cat fedora1
+$ rm -rf fedora1
+$ cd
+$ exit
+
+# chmod 0755 /fedora (remove sticky bit)
+# ls -ld /fedora
+
+**** how to apply sgid and sticky bit
+
+# chgrp wipro /fedora
+# chmod 3777 /fedora
+# ls -ld /fedora
+# chmod 7777 /fedora (set suid ,sgid nd sticky bit) (not any meaning)
+# ls -ld /fedora
+# chmod u-s /fedora
+# ls -ld /fedora
+
+rwT
+T (indetect to back not X )
+
+# chmod o-x /fedora
+# ls -ld /fedora
+# chmod o+x /fedora
+# ls -ld /fedora
+# chmod g-x /fedora
+# ls -ld /fedora
+
+# chmod g+x /fedora
+# ls -ld /fedora
+
+*************************
+how to recover any users profile files:-
+
+# useradd raju
+# su - raju
+$ ls
+$ ls -a
+$ rm -rf .*
+$ ls -a
+$ exit
+
+# su - raju
+$ exit
+
+# cd /etc/skel
+# ls -a
+# cp -af .[!.]* /home/raju
+# su - raju
+$ ls -a
+$ exit
+
+*************
+how to add any users without any useradd command with create to directory for useradd :-
+
+# cd /home
+
+# ll
+
+# mkdir network
+# ll
+# chmod 700 /home/network
+# ll
+# vim /etc/passwd
+
+network:x:1020:1020::/home/network:/bin/bash
+
+wq!
+
+# vim /etc/group
+
+network:x:1020:
+
+wq!
+
+# chown network /home/network
+# chgrp network /home/network
+# ll
+
+# cp -af /etc/skel/.[!.]* /home/network
+# cd
+# id network
+# passwd network
+12345
+12345
+# su - network
+
+$ pwd
+$ exit
+
+**************** SUDO (super user do)
+1st example :- how to provide full rights
+
+# useradd sachin
+# passwd sachin
+12345
+12345
+
+# vim /etc/ sudoers
+
+98 line after entry
+
+sachin ALL=(ALL)
+
+ALL
+
+wq!
+
+# su - sachin
+$ sudo fdisk -l
+sudo password : 12345
+
+$ sudo useradd raj
+$ sudo userdel raj
+$ sudo systemctl restart crond
+$ sudo -l (rights of list )
+
+$ exit
+
+******** how to provide some limted rights sudo
+
+# which useradd
+# which usermod
+
+# vim /etc/sudoers
+
+98 line after entry
+
+sachin ALL=(ALL)
+
+/usr/sbin/useradd, /usr/sbin/usermod
+
+wq!
+
+# su -sachin
+
+$ sudo -l
+$ exit
+
+********* how to allow all command except of given list
+
+# which fdisk
+# which userdel
+# useradd alok
+# passwd alok
+123
+
+# vim /etc/sudoers
+
+98 line after entry
+
+sachin ALL=(ALL)
+
+/usr/sbin/useradd, /usr/sbin/usermod
+
+alok ALL=(ALL)
+
+ALL, !/usr/sbin/userdel, !/usr/sbin/fdisk
+
+wq!
+
+# su - alok
+$ sudo useradd rajeev
+$ sudo fdisk -l
+$ sudo -l
+$ exit
+
+****** how to create sudo group
+
+# groupad tcs
+# useradd -G tcs t1
+# useradd -G tcs t2
+
+# passwd t1
+123
+# passwd t2
+123
+
+# vim /etc/sudoers
+
+%tcs ALL=(ALL)
+
+wq!
+
+# su - t1
+$ sudo fdisk -l
+
+ALL
+
+passwd : 123
+
+$ exit
+
+******** contolling services
+OR
+Daemon
+OR
+units -> in rhel7
+
+daemon => "init " or
+OR
+
+till rhel-6
+
+"systemd" program
+rhel-7
+
+unit
+
+init => pid 1
+or
+systemd
+
+# pstree
+
+server name
+
+ssh
+crontab
+
+daemon
+
+sshd
+crond
+
+ntp
+
+chronyd
+
+samba
+
+smb
+
+mailserver
+
+postfix
+
+rhel-6
+
+rhel-7
+
+parrent process
+
+parrent process
+
+"int"
+
+"systemd"
+
+pid = 1
+
+pid= 1
+
+commands
+temporey
+"service"
+
+permanent
+
+commands
+
+"chkconfig"
+
+t -- p
+"systemctl"
+
+# service sshd start/stop/restart/reload/status
+# chkconfig sshd on/off
+
+# systemctl enable sshd
+
+# systemctl actions unitname .type
+service path
+
+# cat /etc/redhat-release
+# cat /etc/system-release
+
+# systemctl start sshd
+
+socket
+
+# cat /etc/os-release
+
+# pstree
+# pidof systemd
+# pstree | grep crond
+# pstree | grep sshd
+# pidof sshd
+#
+
+# systemctl status sshd
+# systemctl is-active sshd
+
+(temprory active)
+
+# systemctl is-enabled sshd
+
+(permanent enble)
+
+# systemctl stop sshd
+
+(temprory stop)
+
+# systemctl disable sshd (permanent disable)
+# systemctl status sshd
+# systemctl start sshd (temprory)
+# systemctl enable sshd (permanent)
+
+#
+# systemctl list-units
+
+(temprory status of all service)
+
+# systemctl list-units-files
+
+(permanent status of all service)
+
+# systemctl list-units | grep crond
+# systemctl list-units sshd
+# systemctl list-units | grep -E 'sshd|crond'
+# systemctl
+# systemctl | grep crond
+#
+
+# systemctl list-units-files | grep crond
+# systemctl list-units-files | grep sshd
+
+# systemctl list-units --type=service
+# systemctl list-units --type=path
+# systemctl list-units --type=socket
+
+# systemctl list-units --failed
+
+# systemctl status iptables
+# systemctl status firewalld
+# systemctl mask iptables
+# systemctl start iptables
+# systemctl status iptables
+# systemctl umask iptables
+# systemctl start iptables
+# systemctl enable iptables
+# systemctl stop firewalld
+# systemctl disable firewalld
+# systemctel mask firewalld
+# systemctl list-units | grep firewalld
+
+# systemctl list-units-files | grep masked (check masked of service)
+#
+
+#
+
+********** RUN Lebel
+
+run level
+
+targets
+
+init
+
+systemd
+
+there are 7 type of run level :-
+
+# init 0 => { poweroff }
+# int 1 => ( single user mode or trubleshooting mode)
+# init 2 => ( multi user mode but without network)
+# init 3 => ( full multi user mode or text mode )
+# init 4 => ( unused)
+# init 5 => ( gui mode x-11 window)
+# init 6 => ( reboot)
+
+# runlevel (check runlevel mode )
+# who -r
+
+types of runlevel changeing method :-
+
+tempory
+
+by using
+"init" commnd
+
+permanent
+
+at the time of
+
+# vim /etc/inittab
+
+machine boot up
+
+id:3:initdefault
+
+:wq!
+# init 6
+
+# runlevel
+# who -r
+# init 3
+
+# runlevel
+# init 5
+
+# runlevel
+# cat /etc/inittab
+
+*****rhel 6
+2 mode
+1. rescue mode ( to recover any grub & kernel related issues)
+2. emergency mode ( to recover any file system related issues)
+
+rhel7
+******* targets
+there are only 4 types of targets
+
+1. graphical.target => init 5 (full multi user mode with gui+cli )
+2. multi-user.target => init 3 ( full multi user mode with cli only )
+3. rescue.target => rescue mode
+4 emergency.target => emergency mode
+
+# init 6
+or
+# systemcl reboot
+
+# init 0
+or
+# systemctl poweroff
+
+# init 1 => rd.break
+
+# systemctl get-default
+# systemctl isolate multi-user.target ( tempory cli text mode )
+# systemctl isolate graphical.target ( tempory gui mode)
+# systemctl set-default multi-user.target ( permanent cli text mode )
+
+# cat /etc/systemd/system/default.target (targets file )
+
+# systemctl reboot
+
+# systemctl set-default graphical.target ( permanent gui mode )
+
+# systemctl get-default (check runlevel )
+
+******* how to deactivate ctrl+alt+delete
+
+# vim /usr/lib/systemd/system/ctrl-alt-del.target
+
+#requires=systemd-reboot.service
+
+wq!
+
+#
+
+********** how to break root password rhel7
+1. reboot
+press e to edit
+
+2. linux 16 end line type rd.break
+
+3. than ctrl+x
+
+# mount -o remount rw /sysroot
+# chroot /sysroot
+# passwd
+redhat
+redhat
+
+# getenforce
+# touch /.autorelabel
+# exit
+# exit
+
+******** how to apply user name and password on single user mode :-
+
+# grub2-mkpasswd-pbkdf2
+passwed: redhat123
+than copy
+
+# vim /etc/grub.d/40_custom
+
+set superusers="deepak"
+password_pbkdf2 deepak (paste password)
+
+wq!
+
+# grub2-mkconfig -o /boot/grub2/grub.cfg
+
+# reboot
+
+********* remove password single user mode
+
+# vim /etc/grub.d/40_custom
+
+delete edit line
+
+:wq!
+
+# grub2-mkconfig -o /boot/grub2/grub.cfg
+
+******** how to install google chrome for redhat 7
+
+**** how to create repodata manually
+
+# rpm -qa createrepo
+
+# cd /redhat/Packages
+# rpm -ivh createrepo-
+
+# createrepo -v /redhat
+# ls /redhat
+# yum clean all
+# yum repolist
+
+**********************************
+how to used gpg key concept:-
+
+# locate RPM
+copy rpm gpg key
+
+# cat /etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+
+# vim /etc/yum.repos.d/yum.repo
+
+[yum]
+baseurl=file:///redhat
+enabled=1
+gpgcheck=1
+gpgkey=file:///redhat1/RPM-GPG-KEY-redhat-release
+
+wq!
+
+# yum clean all
+# yum repolist
+# yum install samba
+#
+
+************* how to configure yum client any give url:-
+
+# cd /etc/yum.repos.d/yum.repo
+
+[yum]
+baseurl=http://content.example.com/rhel7.0/x86_64/dvd
+enabled=1
+gpgcheck=0
+
+wq!
+
+OR
+
+# yum-config-manager --add-repo=http://classroom.example.com
+
+OR
+# yum-config-manager --add-repo=file:///redhat
+
+#
+# yum clean all
+# repolist
+
+******** NTP configure cli
+
+# vim /etc/chrony.conf
+
+server desktop0.example.com iburst
+
+wq!
+
+# systemctl restart chronyd.service
+# systemctl enable chronyd.service
+
+# timedatectl
+
+# nptdate -u 172.25.254.254 (**********)
+
+network file :-
+
+# vim /etc/hosts
+
+# vim /etc/hostname (permanent hostname set)
+
+# cat /etc/sysconfig/network-scrits/ifcfg-static (network configuraion file)
+# nmcli connection show
+
+# nmcli connection add connection-name static ifname eno type ethernet autoconnet yes
+ip4 '192.168.0.1/24'
+
+# nmcli connction show
+
+without dns to ping machine name
+
+# vim /etc/hosts
+
+192.168.0.1 station1.example.com staion1
+
+server1
+
+192.168.0.2 station2.example.com station2
+
+server2
+
+wq!
+
+# ping station1.example.com
+
+# ping station1
+# ping server1
+
+# hostname -a (alias show)
+
+# hostname -i
+# hostname -d
+# hostname -f
+# hostname -s
+
+***************************************************************
+
+( server machine ip addrs configration )
+
+# nmcli connecton add con-name ststic ifname eth0 type ethernet autoconnect yes ip4
+'172.25.0.11/24' gw4 172.25.254.254
+
+# nmcli connection show
+# ifconfig
+# ip route (gateway check)
+
+how to add machine with any dns server
+
+# nmcli connection modify static ipv4.dns 172.25.254.254
+# nmcli connection down static
+# nmcli connetion up static
+# ifconfig eth0
+# ifconfig lo
+# ifdown eth0
+# ifup eth0
+
+OR
+
+ONLY LAB CONFIGURE DNS SERVER
+
+# cat /etc/resolv.conf
+
+# vim /etc/resolv.conf (dns server configuration file check )
+
+search classroom.example.com
+nameserver 172.25.254.254
+
+:wq!
+
+# nmcli connection down static
+# nmcli connection up
+# nmcli device status
+# nmcli device disconnet eth0
+# nmcli device status
+# nmcli device connect eh0
+# nmcli device status
+# ip addr
+# ip a
+# ip link
+# ip add show eth0
+# ethtool eth0 (link detected yes)
+# traceroute 172.25.254.254
+# route -n
+# route
+
+***********************************************************
+how to change ip file method :-
+
+# vim /etc/sysconfig/network-scripts/ifcfg-static
+
+IPADDR0=172.25.0.15
+
+wq!
+
+# ifdown eth0
+# ifup etho
+# ifconfig eth0
+
+# nmcli connetion show static (all parameter show)
+#
+# nmcli connection modify static ipv4.addresses '172.25.0.20/24 172.25.254.254'
+# ifdown eth0
+# ifup eth0
+# ifconfig eth0
+
+# nmcli connetion show --active
+
+how to take ip by dhcp server :-
+
+# nmcli connetion delete static
+# nmcli connection show
+
+# nmcli connetion add con-name dynamic ifname eth0 type ethernet autoconnet yes
+# nmcli connetion show
+# ifconfig eth0
+
+# cat /etc/sysconfig/network-scripts/ifcfg-dynamic
+#
+
+# nmcli connection show dynamic
+
+# netstat -tunlp (all running port show)
+# netstat -tunlp | grep sshd
+# netstat -tunlp | grep 22
+
+# netstat -tnlp (only tcp port show)
+# netstat -unlp (only udp port show)
+# netstat -unlp | grep -v udp6
+# netstat -nr
+
+# vim /etc/services (all service port nuber entry)
+
+# cat /etc/services | grep rsync
+# cat /etc/services | grep telnet
+
+**************************************
+
+** scp nd rsync both command used to copy any files from one machine nd onther machine
+**
+SCP
+
+scp -r source dentination
+OR
+rsync -avH sourse dentination
+
+# scp -r root@172.25.0.10:/home /tmp
+# ls /tmp
+
+# scp -r root@172.25.0.10:/etc/psswd /tmp
+
+# rm -rf /etc/grub.cfg
+# scp -r root@172.25.0.10:/etc/grub2.cfg /tmp
+
+# scp -r root@172.25.0.10:/etc/grub2.cfg /etc
+# ls /tmp
+
+RSYNC
+
+# mkdir /php
+# mkdir /java
+# touch /php/a{1..5}
+# rsync -avH /php /java
+# echo "hello" > /php/a1
+# rsync -avH /php /java
+
+# rsync -avH root@172.25.0.10:/home /srv
+
+# rsync -avH /etc root@172.25.0.10:/tmp
+
+********************************************
+RAID
+(Redundant arry of independent disk)
+
+* Raid technology always used to provide high data writing scripting
+with data securing.
+
+*** Types of Raid
+
+* Software Raid
+* Hardware Raid
+
+****** Types of Raid-level
+
+1. Raid :- 0 (stripping without parity)
+2. Raid :- 1 (mirror volume)
+3. Raid :- 5 (stripping with parity)
+
+Raid - 0 :- Requirement
+
+* 2 hardisk
+* same size
+* same configuration
+* no fault tolerance
+* data writting is very fast
+* usable size 100%
+
+Raid - 1 :- mirror volume
+
+* minmum 2 hardisk
+* same size
+* same configuration
+* works on mirror concept
+* data writting is slow as compare to raid 0
+* usable size 50%
+
+Raid - 5
+
+* minumum 3 hardisk
+* same size
+* same configuration
+* fault tolerance
+* data writting speed is also fast
+* single hardisk failure concept
+* works on single parity concept
+
+Parity ?
+
+works on X - or operation
+
+00=0
+01=1
+10=1
+11=0
+
+disk 1 = 1010110
+disk2 = 1000101
+
+parity ? = 1000101
+
+80GB 80GB 80GB
+
+240 - 80= 160 = 66% usable size
+
+# fdisk -l
+# rpm -qa mdadm
+
+# fdisk /dev/vdb
+
+:n
+:p
+:1
+:enter
+:+2GB
+
+:n
+:p
+:2
+:enter
+:+2G
+
+:n
+:p
+:3
+:enter
+:+2G
+
+:p
+
+:t
+
+:1
+:fd
+
+:t
+:2
+:fd
+
+:t
+:3
+:fd
+
+:p (print)
+:w (save)
+
+# partprobe /dev/vdb
+# mdadm -C /dev/md0 -a yes -l 5 -n 3 /dev/vdb{1,2,3}
+
+# mkfs.xfs /dev/md0
+# mkdir /raid
+# mount /dev/md0 /raid
+
+# vim /etc/fstab
+
+/dev/md0 /raid xfs defaults 0 0
+
+:wq!
+
+# mount -a
+# df -TH
+
+# mdadm --detail /dev/md0 (check raid configuration level nd device active)
+
+OR
+
+# mdadm -D /dev/md0
+# cat /proc/mdstat
+
+***** permanet save raid this file :-
+
+# mdadm --detail --scan >> /etc/madam.conf
+
+# cat /etc/mdadm.conf
+
+Write Data :-
+
+# df -TH
+# cp -rf /etc /raid
+
+# df -TH
+
+** how to perfrom hot swapable process.
+
+# mdadm /dev/md0 -f /dev/vdb3
+# cat /proc/mdstat
+
+# mdadm --detail /dev/md0
+
+# mdadm /dev/md0 -r /dev/vdb3
+# cat /proc/mdstat
+
+# mdadm /dev/md0
+
+**** readd /dev/vdb3
+
+# mdadm /dev/md0 -a /dev/vdb3
+# mdadm --detail /dev/md0
+# ls /raid
+
+**** how to remove raid
+
+# umount /raid
+# mdadm --stop /dev/md0
+# mdadm --assemble /dev/md0 (enable raid)
+
+# mdadm --stop /dev/md0
+
+# vim /etc/fstab
+
+/dev/md0 /raid xfs defaults 0 0 (delete line)
+
+:wq!
+
+# mount -a
+
+# df -TH
+
+# vim /etc/madam.conf
+
+(delete entry)
+
+:wq!
+
+# fdisk /dev/fdb
+
+:d
+:1
+:d
+:2
+:d
+:3
+
+:w
+
+# partprobe /dev/vdb
+
+** Partition
+
+MBR Limit (master boot record)
+
+primary partion
+
+extented partition (it is use to only
+personal data)
+
+it is use to data
+
+logical partiton
+
+nd OS file
+
+it is sub part of extended
+
+at a ime only one
+primary partition
+can be active
+
+MBR 4 partion {including , primary & extended }
+
+primary :- min 1
+max :- 4
+
+Extended :- min 0
+max 1
+
+hex code :-
+
+primary , logical :- 83
+extended :- 5
+
+swap :- 82
+lvm :- 8e
+raid :- fd
+
+# fdisk -l (to check disk status)
+
+# fdisk /dev/sda
+
+:n
+:e
+:enter
+:enter
+:p (print)
+
+:n
+:enter
+:+2G
+:p (print)
+:w (save nd quiet)
+
+# partprobe /dev/sda
+#
+
+# mkfs.xfs /dev/sda5 (partion format)
+#
+# mkdir /data
+
+# mount /dev/sd5 /data (temprory mount data)
+
+# df -h (data mount point check)
+# ls /data
+
+# vim /etc/fstab (permanent data mount)
+
+/dev/sda5 /data xfs defaults 0 0
+
+:wq!
+
+#
+
+defaults 0 0
+
+0 :- dump value
+
+0 :- fsck order
+
+# mount -a
+# df -TH
+# du -sh /data ( file sizze check)
+
+how to test partition :-
+
+# cp -rf /etc /data
+# du -sh /data
+# df -TH
+
+*****************************
+# umount /data
+# ls /data
+
+# mount /dev/sd5 /data
+# ls /data
+
+**********************************
+
+swap partion :-
+
+# free -h (swap check)
+
+# fdisk /dev/vdb
+:n
+:p
+
+:1
+:enter
+:+1G
+:p (print)
+:
+:t (code change)
+:l (code list)
+:82
+:p (print)
+
+:w (save)
+
+# partprobe /dev/vdb
+# mkswap /dev/vdb1 (to create the swap partion)
+# swapon /dev/vdb1
+# swap -s (all swap partion activate check )
+
+# free -h
+
+# vim /etc/fstab
+
+/dev/vdb1 swap swap defaults 0 0
+
+:wq!
+
+# mount -a
+
+OR
+
+# cat /proc/swaps
+# cat /proc/meminfo | grep -i swap
+
+how to deactivate swap partion :-
+
+# swapoff /dev/vdb1
+# swapon -s
+
+# swapoff -a (all swap off)
+# swapon -a (all swap on)
+
+# vim /etc/fstab
+
+/dev/vdb1 swap swap defaults 0 0 (delete entry )
+
+:wq!
+
+# mount -a
+
+# fdisk /dev/vdb
+
+:d (delete)
+
+:w
+
+# partprobe /dev/vdb
+
+****************************************************
+
+Booting Process :-
+
+1. Hardware boot
+2. Bootloader
+3. kernel
+4. init or systemd
+5. Login screen
+
+1. Hardware Boot :-
+
+* power on machine
+* smpls will supply the :- power the all connecting devices.
+* It provides Ac to Dc current.
+
+* BIOS initilization.
+* It performs the post operration. to check all hardware connectvity.
+if all devices one ok then it given
+
+* CMOS intilization. :It will find the OS Boot.
+
+2.Bootloader:- It is us to load OS booting files.
+
+** types of bootloader
+
+1. Lilo (linux loader) file:- (/etc/lilo.conf
+2. grub file:- (/etc/grub.conf)
+3. grub2 file:- (/etc/grub2.cfg)
+
+(non visible stage)
+
+* stage -1 :- MBR (Master boot record)
+
+* stage -2 :- grub or grub2
+
+MBR :- 512 bytes
+
+446
+
+64
+
+primary boot
+
+2
+
+partion table
+
+validtion code
+
+grub2 :- load :- vmlinuz =3.10 (kernel)
+load :- initrd.img (initional ram disk ) (file)
+
+1. MBR (crupt)
+2. GRUB (crupt)
+3. KERNEL (crupt)
+4. initrd.img (crupt)
+5. Kernel painic error (crupt)
+
+go to ( rescue mode) :- dvd used
+
+3. Kernel :- It read the /etc/fstab file to mount all devices.
+
+* first it will mount root "/" file system .
+* After then it will mount all sub partiotion & network based
+shared file system.
+
+ctrl+d :- error
+root paasword
+
+4. init OR systemd :-
+
+* It will start parent process "init" OR "systemd"
+* It reads /etc/inittab OR
+/etc/systemd/system/default.target
+to initilize the login enviroment.
+
+* It will check all sservices status and will take the actions.
+
+* It will run all command written in /etc/rc.loacl
+
+5. Login screen :-
+
+login:- root /etc/passwd
+passwd :- redhat /etc/group
+/etc/shadow
+password policy
+profile files intilization
+
+*********** LVM **********
+
+* logical volume management
+
+data storage techniques :-
+
+1. fixed size concept
+2. not fixed size concept
+
+what is physical volume:-
+
+***********
+
+# fdisk -l
+
+# fdisk /dev/vdb
+
+:n
+:p
+:1
+: enter
+:+1G
+:p (print)
+:n
+:p
+:enter
+
+:+2G
+:p (print)
+:t
+:1
+:8e
+:t
+:2
+:8e
+:p (print)
+
+:w (save)
+
+# partprobe /dev/vdb
+
+# pvcreate /dev/vdb1 /dev/vdb2
+
+# pvdisplay
+
+# pvs (to check all physical volume with status)
+
+# vgcreate myvg1 /dev/vdb{1,2}
+
+# vgdisplay
+# vgs
+
+# lvcreate -L +1G -n mylv1 /dev/myvg1
+
+# lvcreate -L +500M -n mylv2 /dev/myvg1
+
+# mkfs.xfs /dev/myvg1/mylv1
+
+# mkfs.ext4 /dev/myvg1/mylv2
+
+# mkdir /lvm1
+# mkdir /lvm2
+
+# mount /dev/myvg1/mylv1 /lvm1 (tempray mount)
+# mount /dev/myvg1/mylv2 /lvm2
+
+# vim /etc/fstab
+
+(permament mount)
+
+/dev/myvg1/mylv1
+
+/lvm1
+
+xfs defaults
+
+/dev/myvg1/mylv2
+
+/lvm2
+
+ext4 defaults 0 0
+
+wq!
+
+# mount -a
+
+# df -h
+
+# df -TH
+
+# lvdisplay /dev/myvg1/mylv1
+
+# du -sh /etc
+# df -TH
+
+00
+
+# cp -rf /etc /lvm1
+# cp -rf /etc /lvm2
+
+# df -TH
+
+how to extend LVM size :-
+
+# vgs (to check used nd free space)
+# df -TH
+
+# lvextend -L +300M /dev/myvg1/mylv1
+
+# xfs_growfs /dev/myvg1/mylv1
+
+# df -TH
+
+If file ext2 , ext3 , ext4 file system :-
+
+# lvextend -L +200M /dev/myvg1/mylv2
+
+# resize2fs /dev/myvg1/mylv2
+
+# df - TH
+
+how to lvresize :-
+
+# df -TH
+
+# lvresize -L 800M -r /dev/myvg1/mylv2
+
+# df -TH
+
+# lvresize -L 1500M -r /dev/myvg1/mylv1
+
+# df -TH
+
+how to reduce any lvm size :-
+
+note:- xfs (not reduce only extend)
+
+# lvresize -L 500M -r /dev/myvg1/mylv2
+
+do you want to unmount y/n :- y
+
+# df -TH
+
+# vgs
+
+how to extend volume group size :-
+
+# fdisk /dev/vdb
+
+:n
+:p
+:3
+:enter
+:+1G
+:t
+:3
+:8e
+:w
+
+# partprobe /dev/vdb
+
+# pvcreate /dev/vdb3
+# pvs
+
+# vgextend myvg1 /dev/vdb3
+# vgs
+
+******************************************
+
+forcefully scan:-
+
+# pvscan
+# vgscan
+# lvscan
+
+bydefault block
+
+1 PE = 4 MB
+p :- phisical
+
+e :- extent (chunk)
+
+1 PE = minmum = 1 MB
+maximum = 128 MB
+
+128 , 64 , 32 , 16 , 8 , 4 , 2 , 1
+
+# ls /etc/lvm/archive (refrence point)
+
+
